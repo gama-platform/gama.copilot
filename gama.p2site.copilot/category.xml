@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="GitHub Copilot for GAMA">Independent Copilot integration for GAMA.</description>
+   <feature id="gama.feature.copilot" version="0.0.0">
+      <category name="gama.copilot"/>
+   </feature>
+   <category-def name="gama.copilot" label="GitHub Copilot for GAMA"/>
+</site>

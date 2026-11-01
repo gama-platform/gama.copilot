@@ -1,0 +1,10 @@
+name: Integration feature request
+description: Suggest an improvement to GAMA integration or packaging.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and proposed improvement
+      description: Explain the GAMA-specific need. Request upstream Copilot features upstream instead.
+    validations:
+      required: true

@@ -1,0 +1,137 @@
+name: Publish GitHub Copilot for GAMA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'gama.ui.copilot/**'
+      - 'gama.feature.copilot/**'
+      - 'gama.p2site.copilot/**'
+      - 'scripts/**'
+      - 'upstream.lock.json'
+      - 'pom.xml'
+      - 'LICENSE'
+      - 'THIRD_PARTY.md'
+      - 'licenses/**'
+      - '.github/workflows/publish-copilot.yaml'
+  pull_request:
+    paths:
+      - 'gama.ui.copilot/**'
+      - 'gama.feature.copilot/**'
+      - 'gama.p2site.copilot/**'
+      - 'scripts/**'
+      - 'upstream.lock.json'
+      - 'pom.xml'
+      - 'LICENSE'
+      - 'THIRD_PARTY.md'
+      - 'licenses/**'
+      - '.github/workflows/publish-copilot.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: copilot-${{ github.event_name == 'pull_request' && github.ref || 'pages' }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - name: Set up Maven 3.9.16
+        env:
+          MAVEN_VERSION: '3.9.16'
+        run: |
+          base="https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/${MAVEN_VERSION}"
+          archive="apache-maven-${MAVEN_VERSION}-bin.tar.gz"
+          curl -fsSL --retry 3 "$base/$archive" -o "$RUNNER_TEMP/$archive"
+          curl -fsSL --retry 3 "$base/$archive.sha512" -o "$RUNNER_TEMP/$archive.sha512"
+          printf '%s  %s\n' "$(cat "$RUNNER_TEMP/$archive.sha512")" "$RUNNER_TEMP/$archive" | sha512sum --check
+          tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/apache-maven-${MAVEN_VERSION}/bin" >> "$GITHUB_PATH"
+      - name: Verify the pinned upstream distribution
+        run: python3 scripts/prepare-upstream.py
+      - name: Build the update site
+        run: |
+          qualifier="$(date -u +%Y%m%d%H%M%S)-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          mvn -B "-Dcopilot.upstream.repository=file:${GITHUB_WORKSPACE}/.build/upstream" \
+            "-DforceContextQualifier=$qualifier" -DskipTests package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: copilot-p2
+          path: gama.p2site.copilot/target/repository/
+          retention-days: 7
+
+  publish:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: copilot-p2
+          path: incoming
+      - name: Restore retained repositories
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          mkdir _site
+          git -C _site init -b copilot-site
+          git -C _site remote add origin "https://github.com/${REPOSITORY}.git"
+          gh auth setup-git
+          status=0
+          git -C _site ls-remote --exit-code --heads origin refs/heads/copilot-site > "$RUNNER_TEMP/site-ref" || status=$?
+          if [ "$status" -eq 0 ]; then
+            git -C _site fetch --depth=1 origin copilot-site
+            git -C _site checkout -B copilot-site FETCH_HEAD
+          elif [ "$status" -ne 2 ]; then
+            exit "$status"
+          fi
+      - name: Assemble versioned composite repository
+        env:
+          RELEASE: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          cp LICENSE THIRD_PARTY.md upstream.lock.json incoming/
+          cp -R licenses incoming/
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          provenance = {
+              "commit": os.environ["GITHUB_SHA"],
+              "source": f'https://github.com/{os.environ["GITHUB_REPOSITORY"]}/tree/{os.environ["GITHUB_SHA"]}',
+              "run": f'https://github.com/{os.environ["GITHUB_REPOSITORY"]}/actions/runs/{os.environ["GITHUB_RUN_ID"]}',
+          }
+          Path("incoming/provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")
+          PY
+          python3 gama.p2site.copilot/publish.py incoming _site "$RELEASE"
+          cp gama.p2site.copilot/index.html _site/index.html
+          cp LICENSE THIRD_PARTY.md upstream.lock.json _site/
+          cp -R licenses _site/
+      - name: Retain immutable repositories
+        run: |
+          git -C _site config user.name "github-actions[bot]"
+          git -C _site config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C _site add .
+          git -C _site commit -m "Publish Copilot build ${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git -C _site push origin HEAD:refs/heads/copilot-site
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

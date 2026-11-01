@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="gama.feature.copilot" label="GitHub Copilot for GAMA"
+      version="0.0.0.qualifier" provider-name="UMMISCO">
+   <description url="https://github.com/gama-platform/gama.copilot">
+      GitHub Copilot for Eclipse 0.21.0 with GAMA-specific startup and UI integration.
+      GitHub sign-in and a Copilot entitlement are managed by GitHub Copilot.
+   </description>
+   <copyright>
+      Copyright (c) 2007-2026 UMI 209 UMMISCO IRD/SU &amp; Partners.
+   </copyright>
+   <license url="license.html">
+      The GAMA integration is licensed under GNU GPL version 3.
+      Unmodified third-party components retain their own licenses and notices.
+      GitHub Copilot use is subject to the upstream terms presented by its feature.
+   </license>
+   <url>
+      <update label="GitHub Copilot for GAMA" url="https://gama-platform.org/gama.copilot/"/>
+   </url>
+   <includes id="com.microsoft.copilot.eclipse.feature" version="0.21.0.202608060743"/>
+   <plugin id="gama.ui.copilot" version="0.0.0" unpack="false"/>
+</feature>

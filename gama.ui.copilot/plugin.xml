@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension point="gama.ui.application.startup">
+      <startup class="gama.ui.copilot.CopilotStartup"/>
+   </extension>
+   <extension point="org.eclipse.ui.activities">
+      <activity id="gama.ui.copilot.hiddenStatusBar" name="Hidden Copilot status bar"
+            description="GAMA exposes Copilot through its menus and chat view."/>
+      <activityPatternBinding activityId="gama.ui.copilot.hiddenStatusBar"
+            pattern="com\.microsoft\.copilot\.eclipse\.ui/com\.microsoft\.copilot\.eclipse\.ui\.statusBar"/>
+      <activityPatternBinding activityId="gama.ui.copilot.hiddenStatusBar"
+            pattern="com\.microsoft\.copilot\.eclipse\.ui/com\.microsoft\.copilot\.eclipse\.commands\.showStatusBarMenu"/>
+   </extension>
+</plugin>

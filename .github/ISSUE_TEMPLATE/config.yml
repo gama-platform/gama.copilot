@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Upstream GitHub Copilot for Eclipse
+    url: https://github.com/microsoft/copilot-for-eclipse/issues
+    about: Chat, completion, agent and authentication problems.
+  - name: GAMA
+    url: https://github.com/gama-platform/gama/issues
+    about: Generic GAMA and GAML editor issues.

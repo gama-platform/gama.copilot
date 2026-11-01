@@ -1,0 +1,28 @@
+name: Integration or installation bug
+description: Report a GAMA Copilot integration, dependency or update-site problem.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For upstream chat/completion/sign-in bugs use https://github.com/microsoft/copilot-for-eclipse/issues.
+        For generic GAMA/GAML editor bugs use https://github.com/gama-platform/gama/issues.
+        Do not include access tokens, private source, or private prompts.
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: GAMA version, installed Copilot feature version, Java version, OS and architecture.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction and expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Actual result and sanitized logs
+    validations:
+      required: true
