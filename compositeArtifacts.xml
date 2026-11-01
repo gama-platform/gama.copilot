@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?compositeArtifactRepository version="1.0.0"?>
+<repository name="GitHub Copilot for GAMA" type="org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository" version="1.0.0">
+  <properties size="1">
+    <property name="p2.timestamp" value="1793523109233" />
+  </properties>
+  <children size="1">
+    <child location="releases/41290476044-1" />
+  </children>
+  <references size="4">
+    <repository uri="https://azuredownloads-g3ahgwb5b8bkbxhd.b01.azurefd.net/github-copilot/" url="https://azuredownloads-g3ahgwb5b8bkbxhd.b01.azurefd.net/github-copilot/" type="0" options="1" />
+    <repository uri="https://azuredownloads-g3ahgwb5b8bkbxhd.b01.azurefd.net/github-copilot/" url="https://azuredownloads-g3ahgwb5b8bkbxhd.b01.azurefd.net/github-copilot/" type="1" options="1" />
+    <repository uri="https://download.eclipse.org/releases/2026-03/" url="https://download.eclipse.org/releases/2026-03/" type="0" options="1" />
+    <repository uri="https://download.eclipse.org/releases/2026-03/" url="https://download.eclipse.org/releases/2026-03/" type="1" options="1" />
+  </references>
+</repository>
