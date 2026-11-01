@@ -3,24 +3,22 @@
 ## GAMA integration
 
 `gama.ui.copilot`, the wrapper feature and build/publication code are GPL-3.0.
-The full license is in [LICENSE](LICENSE). GPL does not relicense separate third-party artifacts
-aggregated in the p2 repository.
+The full license is in [LICENSE](LICENSE). This thin p2 repository distributes only GAMA's
+adapter and wrapper feature. GPL does not relicense externally installed dependencies.
 
 ## Unmodified Copilot for Eclipse
 
-Source and release: <https://github.com/microsoft/copilot-for-eclipse/tree/0.21.0>.
-The release is MIT-licensed, copyright Microsoft Corporation.
-The MIT notice is retained in [licenses/copilot-eclipse-MIT.txt](licenses/copilot-eclipse-MIT.txt).
-Its upstream branding/feature and service terms remain unchanged in the mirrored JARs.
-No upstream source is forked or rebuilt here.
+Initially validated release: <https://github.com/microsoft/copilot-for-eclipse/tree/0.21.0>.
+This release is MIT-licensed, copyright Microsoft Corporation.
+Microsoft's update site supplies its feature, branding, agents and associated terms directly.
+No upstream source is forked, rebuilt or redistributed here.
 
-The pinned release uses `@github/copilot-language-server` **1.527.0** and matching platform
+The initially validated release uses `@github/copilot-language-server` **1.527.0** and matching platform
 packages. These packages declare the MIT license, separately from the service subscription.
-The language server MIT notice is retained in
-[licenses/copilot-language-server-MIT.txt](licenses/copilot-language-server-MIT.txt).
-Native binaries, runtime components and bundled third-party notices remain part of the unmodified
-agent JARs. Their notices must accompany redistribution; do not strip files from those JARs.
-This permission to redistribute software does not provide Copilot service access or a trademark license.
+These details document the initially validated dependency; they do not assert that future
+upstream versions have identical licensing. Native binaries, runtime components and bundled
+third-party notices are supplied by Microsoft. Review the terms of the version being installed.
+Software licensing does not provide Copilot service access or a trademark license.
 
 Provenance:
 
@@ -35,12 +33,12 @@ Review GitHub/Microsoft privacy and telemetry settings before sending private so
 
 ## Eclipse and other dependencies
 
-The p2 build resolves the mandatory closure from Eclipse 2026-03. Eclipse Platform components
+The build and installation resolve platform dependencies from Eclipse 2026-03, without
+mirroring them into the GAMA site. Eclipse Platform components
 are generally EPL-2.0; bundled libraries may use Apache, BSD, MIT or other licenses.
-Every included feature/bundle retains its own original license, notices and signatures.
-The resulting `content.jar` records feature license metadata; JAR `about.html`, `about_files`,
-`META-INF` and other notices remain intact. Source offerings remain available through each
-component's upstream project/release. Do not describe the whole update site as GPL-only or MIT-only.
+Each external feature/bundle has its own license, notices and signatures, supplied by its publisher.
+Source offerings remain available through each component's upstream project/release.
 
-Re-review licenses and source availability when updating the lock or baseline. The exact upstream
-ZIP is verified before packaging; installation never relies on the moving upstream update site.
+Re-review licenses when updating the compatibility range or baseline. Installation deliberately
+depends on Microsoft's moving update site and Eclipse's release site, rather than retained
+copies of their binaries.

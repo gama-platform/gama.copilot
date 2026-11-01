@@ -4,10 +4,12 @@
 
 - Extract optional Copilot packaging from GAMA into `gama-platform/gama.copilot`,
   retaining the `gama.feature.copilot` feature ID.
-- Add an independent Tycho build and dependency-complete p2 site with retained releases
+- Add an independent Tycho build and thin p2 site with retained GAMA releases
   behind `https://gama-platform.org/gama.copilot/`.
-- Pin unmodified Copilot for Eclipse 0.21.0 (`0.21.0.202608060743`) and its release ZIP
-  digest against the Eclipse 2026-03 / Java 21 baseline.
+- Require unmodified Copilot for Eclipse in the compatible range `[0.21.0,1.0.0)`,
+  initially validated with `0.21.0.202608060743`, against Eclipse 2026-03 / Java 21.
+- Download Copilot and its native agents directly from Microsoft's site, and platform
+  dependencies from Eclipse. Publish only the small GAMA adapter and wrapper, not mirrors.
 - Support Linux GTK x86_64, Windows x86_64, and both macOS architectures.
 - Move preference seeding and status-bar activity bindings into `gama.ui.copilot`.
   Preference seeding uses GAMA's new pre-workbench Runnable startup extension,

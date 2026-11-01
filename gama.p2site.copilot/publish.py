@@ -1,14 +1,18 @@
 """Assemble immutable release repositories behind a stable composite p2 site."""
 
 import argparse
-import hashlib
-import lzma
 from pathlib import Path
 import re
 import shutil
 import time
 import xml.etree.ElementTree as ET
-from zipfile import ZIP_DEFLATED, ZipFile
+from zipfile import ZipFile
+
+
+DEPENDENCY_SITES = (
+    "https://azuredownloads-g3ahgwb5b8bkbxhd.b01.azurefd.net/github-copilot/",
+    "https://download.eclipse.org/releases/2026-03/",
+)
 
 
 def assemble(incoming, site, release):
@@ -16,7 +20,12 @@ def assemble(incoming, site, release):
         raise ValueError("Invalid release directory name")
     for kind in ("content", "artifacts"):
         with ZipFile(incoming / f"{kind}.jar") as archive:
-            ET.fromstring(archive.read(f"{kind}.xml"))
+            metadata = ET.fromstring(archive.read(f"{kind}.xml"))
+        if kind == "artifacts":
+            actual = {(a.get("classifier"), a.get("id")) for a in metadata.findall("artifacts/artifact")}
+            expected = {("osgi.bundle", "gama.ui.copilot"), ("org.eclipse.update.feature", "gama.feature.copilot")}
+            if actual != expected:
+                raise ValueError(f"Unexpected thin-site artifacts: {actual}")
     if not (incoming / "plugins").is_dir() or not (incoming / "features").is_dir():
         raise ValueError("The incoming repository has no plugins or features")
     releases = site / "releases"
@@ -24,35 +33,7 @@ def assemble(incoming, site, release):
     destination = releases / release
     if destination.exists():
         raise ValueError(f"Refusing to overwrite immutable release {release}")
-    for folder in ("plugins", "features", "binary"):
-        source = incoming / folder
-        if not source.exists():
-            continue
-        for artifact in source.iterdir():
-            target = site / folder / artifact.name
-            target.parent.mkdir(exist_ok=True)
-            if target.exists():
-                with artifact.open("rb") as left, target.open("rb") as right:
-                    if hashlib.file_digest(left, "sha256").digest() != hashlib.file_digest(right, "sha256").digest():
-                        raise ValueError(f"Different bytes for retained artifact: {target}")
-            else:
-                shutil.copy2(artifact, target)
-    shutil.copytree(incoming, destination, ignore=shutil.ignore_patterns("plugins", "features", "binary"))
-    with ZipFile(destination / "artifacts.jar") as archive:
-        artifacts = ET.fromstring(archive.read("artifacts.xml"))
-    for rule in artifacts.findall("mappings/rule"):
-        output = rule.get("output")
-        if not output.startswith("${repoUrl}/"):
-            raise ValueError(f"Unexpected artifact mapping: {output}")
-        rule.set("output", output.replace("${repoUrl}/", "${repoUrl}/../../", 1))
-    metadata = (
-        b'<?xml version="1.0" encoding="UTF-8"?>\n<?artifactRepository version="1.1.0"?>\n'
-        + ET.tostring(artifacts, encoding="utf-8") + b"\n")
-    with ZipFile(destination / "artifacts.jar", "w", compression=ZIP_DEFLATED) as archive:
-        archive.writestr("artifacts.xml", metadata)
-    (destination / "artifacts.xml.xz").write_bytes(lzma.compress(metadata))
-    if (destination / "artifacts.xml").exists():
-        (destination / "artifacts.xml").write_bytes(metadata)
+    shutil.copytree(incoming, destination)
     children = sorted(p for p in releases.iterdir() if p.is_dir())
     for child in children:
         if not (child / "content.jar").is_file() or not (child / "artifacts.jar").is_file():
@@ -68,6 +49,11 @@ def assemble(incoming, site, release):
         entries = ET.SubElement(root, "children", size=str(len(children)))
         for child in children:
             ET.SubElement(entries, "child", location=f"releases/{child.name}")
+        references = ET.SubElement(root, "references", size=str(len(DEPENDENCY_SITES) * 2))
+        for location in DEPENDENCY_SITES:
+            for repository_type in ("0", "1"):
+                ET.SubElement(references, "repository", uri=location, url=location,
+                              type=repository_type, options="1")
         ET.indent(root)
         filename = "compositeContent.xml" if kind == "Metadata" else "compositeArtifacts.xml"
         instruction = "compositeMetadataRepository" if kind == "Metadata" else "compositeArtifactRepository"

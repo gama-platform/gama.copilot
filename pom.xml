@@ -14,7 +14,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <tycho.version>5.0.2</tycho.version>
-    <copilot.upstream.repository>https://gama-platform.org/gama.copilot/</copilot.upstream.repository>
+    <copilot.upstream.repository>https://azuredownloads-g3ahgwb5b8bkbxhd.b01.azurefd.net/github-copilot/</copilot.upstream.repository>
   </properties>
   <repositories>
     <repository>
@@ -23,7 +23,7 @@
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>copilot-locked</id>
+      <id>copilot-upstream</id>
       <url>${copilot.upstream.repository}</url>
       <layout>p2</layout>
     </repository>

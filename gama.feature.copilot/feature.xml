@@ -2,7 +2,7 @@
 <feature id="gama.feature.copilot" label="GitHub Copilot for GAMA"
       version="0.0.0.qualifier" provider-name="UMMISCO">
    <description url="https://github.com/gama-platform/gama.copilot">
-      GitHub Copilot for Eclipse 0.21.0 with GAMA-specific startup and UI integration.
+      GAMA-specific startup and UI integration for GitHub Copilot for Eclipse.
       GitHub sign-in and a Copilot entitlement are managed by GitHub Copilot.
    </description>
    <copyright>
@@ -16,6 +16,8 @@
    <url>
       <update label="GitHub Copilot for GAMA" url="https://gama-platform.org/gama.copilot/"/>
    </url>
-   <includes id="com.microsoft.copilot.eclipse.feature" version="0.21.0.202608060743"/>
+   <requires>
+      <import feature="com.microsoft.copilot.eclipse.feature" version="0.21.0" match="compatible"/>
+   </requires>
    <plugin id="gama.ui.copilot" version="0.0.0" unpack="false"/>
 </feature>

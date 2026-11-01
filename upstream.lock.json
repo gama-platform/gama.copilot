@@ -1,8 +1,0 @@
-{
-  "release": "0.21.0",
-  "version": "0.21.0.202608060743",
-  "url": "https://github.com/microsoft/copilot-for-eclipse/releases/download/0.21.0/GithubCopilotForEclipse.zip",
-  "sha256": "29e7b7f018a4c8bc4bf8d83d606448dc06606547c8e8fe6318510eff78aad5bb",
-  "source": "https://github.com/microsoft/copilot-for-eclipse/tree/0.21.0",
-  "eclipse": "https://download.eclipse.org/releases/2026-03/"
-}
