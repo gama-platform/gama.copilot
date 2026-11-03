@@ -9,4 +9,7 @@
   </parent>
   <artifactId>gama.ui.copilot</artifactId>
   <packaging>eclipse-plugin</packaging>
+  <properties>
+    <gama.category>gama.category.ai</gama.category>
+  </properties>
 </project>
