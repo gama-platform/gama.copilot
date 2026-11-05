@@ -18,6 +18,8 @@
    </url>
    <requires>
       <import feature="com.microsoft.copilot.eclipse.feature" version="0.21.0" match="compatible"/>
+      <!-- Copilot checks for the Eclipse Terminal bundles only at runtime, without a p2 requirement. -->
+      <import feature="org.eclipse.terminal.feature" version="1.0.200" match="compatible"/>
    </requires>
    <plugin id="gama.ui.copilot" version="0.0.0" unpack="false"/>
 </feature>

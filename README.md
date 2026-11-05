@@ -48,6 +48,7 @@ UI behavior is verified manually in GAMA.
 | Copilot for Eclipse | **[0.21.0, 1.0.0)**; initially validated with **0.21.0.202608060743** |
 | Copilot language server / native agents | Managed and delivered by Microsoft's feature, not mirrored here |
 | Eclipse | **2026-03** release repository; JavaSE-21 minimum |
+| Eclipse Terminal | `org.eclipse.terminal.feature` **[1.0.200, 2.0.0)** from Eclipse 2026-03; required by the wrapper because Copilot checks for its bundles only at runtime |
 | Build | Tycho **5.0.2**, Maven **3.9.x** (CI: 3.9.16), JDK **21+** (CI: 25), Python **3.11+** |
 
 This is a **thin site**: it distributes only `gama.ui.copilot` and `gama.feature.copilot`.
