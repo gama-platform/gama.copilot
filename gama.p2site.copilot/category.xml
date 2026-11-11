@@ -1,10 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    ============================================================================================
+     PLACEHOLDER - this file is regenerated in CI, before the Maven build, by the
+     gama.devtools "p2-categories" GitHub action. Do not add features or categories here:
+     anything written in this file is overwritten.
+    ============================================================================================
+
+    How features get their categories:
+      1. Declare the category of each plugin in its pom.xml:
+             <properties>
+               <gama.category>gama.category.ai</gama.category>
+             </properties>
+         (several categories can be given, separated by commas)
+      2. Each feature listed in gama.plugin.parent/pom.xml is published in the categories of
+         the plugins it contains. Features without any category go to gama.category.other.
+      3. An unknown category id fails the build.
+
+    Available categories:
+      https://github.com/gama-platform/gama.devtools/blob/main/gama.ui.devtools/categories.xml
+
+    Documentation, and how to generate this file locally:
+      https://github.com/gama-platform/gama.devtools/tree/main/.github/actions/p2-categories
+
+    This placeholder lists no feature, so a local build produces an empty update site;
+    that is expected, only the CI build is published.
+-->
 <site>
-   <description name="GitHub Copilot for GAMA">Independent Copilot integration for GAMA.</description>
-   <feature id="gama.feature.copilot" version="0.0.0">
-      <category name="gama.copilot"/>
-   </feature>
-   <category-def name="gama.copilot" label="GitHub Copilot for GAMA"/>
-   <repository-reference location="https://azuredownloads-g3ahgwb5b8bkbxhd.b01.azurefd.net/github-copilot/" enabled="true"/>
-   <repository-reference location="https://download.eclipse.org/releases/2026-03/" enabled="true"/>
+    <description name="GAMA Update Site">
+        Site containing updates to the GAMA platform software (see http://gama-platform.org)
+    </description>
 </site>

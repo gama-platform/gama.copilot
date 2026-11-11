@@ -2,24 +2,7 @@ name: Publish GitHub Copilot for GAMA
 
 on:
   push:
-    branches: [main]
-    paths:
-      - 'gama.ui.copilot/**'
-      - 'gama.feature.copilot/**'
-      - 'gama.p2site.copilot/**'
-      - 'pom.xml'
-      - 'LICENSE'
-      - 'THIRD_PARTY.md'
-      - '.github/workflows/publish-copilot.yaml'
   pull_request:
-    paths:
-      - 'gama.ui.copilot/**'
-      - 'gama.feature.copilot/**'
-      - 'gama.p2site.copilot/**'
-      - 'pom.xml'
-      - 'LICENSE'
-      - 'THIRD_PARTY.md'
-      - '.github/workflows/publish-copilot.yaml'
   workflow_dispatch:
 
 permissions:
@@ -39,21 +22,18 @@ jobs:
           distribution: temurin
           java-version: '25'
           cache: maven
-      - name: Set up Maven 3.9.16
-        env:
-          MAVEN_VERSION: '3.9.16'
-        run: |
-          base="https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/${MAVEN_VERSION}"
-          archive="apache-maven-${MAVEN_VERSION}-bin.tar.gz"
-          curl -fsSL --retry 3 "$base/$archive" -o "$RUNNER_TEMP/$archive"
-          curl -fsSL --retry 3 "$base/$archive.sha512" -o "$RUNNER_TEMP/$archive.sha512"
-          printf '%s  %s\n' "$(cat "$RUNNER_TEMP/$archive.sha512")" "$RUNNER_TEMP/$archive" | sha512sum --check
-          tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP"
-          echo "$RUNNER_TEMP/apache-maven-${MAVEN_VERSION}/bin" >> "$GITHUB_PATH"
+
+      - name: Generate p2 categories
+        uses: gama-platform/gama.devtools/.github/actions/p2-categories@main
+        with:
+          parent-pom: pom.xml
+          output: gama.p2site.copilot/category.xml
+
       - name: Build the update site
         run: |
           qualifier="$(date -u +%Y%m%d%H%M%S)-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          mvn -B "-DforceContextQualifier=$qualifier" -DskipTests package
+          mvn -B "-DforceContextQualifier=$qualifier" -DskipTests package -Dmaven.resolver.validation=MILD
+          
       - name: Verify thin-site contents
         run: |
           python3 - <<'PY'
